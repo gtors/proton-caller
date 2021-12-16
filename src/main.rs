@@ -66,7 +66,7 @@ fn proton_caller(args: Vec<String>) -> Result<(), Error> {
 
     if parser.contains(["-h", "--help"]) {
         help();
-    } else if parser.contains(["-v", "--version"]) {
+    } else if parser.contains(["-V", "--version"]) {
         version();
     } else if parser.contains(["-i", "--index"]) {
         let config: Config = Config::open()?;
@@ -157,7 +157,6 @@ Options:
     -l, --log               Pass PROTON_LOG variable to Proton
     -p, --proton [VERSION]  Use Proton VERSION from `common`
     -r, --run EXE           Run EXE in proton
-    -v, --verbose           Run in verbose mode
     -V, --version           View version information
 
 Config:
