@@ -10,9 +10,9 @@ checksum = "f822f93441a0df2080a5ca60d861b4cf4ea53e65dccddbe04a70e6630f9e8341"
 
 [[package]]
 name = "lliw"
-version = "0.1.2"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "95a2fc354c42ab799761c289ec29b7c75d5b3c6dc670daa07f9ed8ac0b74440c"
+checksum = "2d502c8bcc35a4f7ca9a7ffb7ac27b15ba30b1b92c2d69a1e4437e2635d73af7"
 
 [[package]]
 name = "proc-macro2"

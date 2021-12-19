@@ -17,5 +17,5 @@ codegen-units = 1
 [dependencies]
 toml = "0.5"
 jargon-args = "0.2.3"
-lliw = "*"
+lliw = "0.2.0"
 serde = { version = "1", features = ["derive"] }
