@@ -66,7 +66,7 @@ fn proton_caller(args: Vec<String>) -> Result<(), Error> {
 
     if parser.contains(["-h", "--help"]) {
         help();
-    } else if parser.contains(["-V", "--version"]) {
+    } else if parser.contains(["-v", "--version"]) {
         version();
     } else if parser.contains(["-i", "--index"]) {
         let config: Config = Config::open()?;
@@ -157,7 +157,7 @@ Options:
     -l, --log               Pass PROTON_LOG variable to Proton
     -p, --proton [VERSION]  Use Proton VERSION from `common`
     -r, --run EXE           Run EXE in proton
-    -V, --version           View version information
+    -v, --version           View version information
 
 Config:
     The config file should be located at '$XDG_CONFIG_HOME/proton.conf' or '$HOME/.config/proton.conf'
