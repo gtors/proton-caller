@@ -1,6 +1,6 @@
 [package]
 name = "proton-call"
-version = "3.0.0"
+version = "3.0.1"
 license = "MIT"
 authors = ["Avery Murray <avery.murray@caverym.xyz>"]
 description = "Run any Windows program through Valve's Proton"
