@@ -93,3 +93,8 @@ Path=/home/avery/Documents/games/SpaceEngine/system
 Terminal=false
 StartupNotify=false
 ```
+
+
+## Credits
+
+[logo](logo.svg) by [Maro_Does_Art](https://twitter.com/Maro_Does_Art) on twitter
