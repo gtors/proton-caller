@@ -1,9 +1,9 @@
 # <img width="5%" src="logo.svg" alt="Proton Caller logo"> Proton-Caller
 Run any Windows program through [Valve's Proton](https://github.com/ValveSoftware/Proton).
 
-[Usage](https://github.com/caverym/Proton-Caller#usage)
+[![Packaging status](https://repology.org/badge/vertical-allrepos/proton-caller.svg)](https://repology.org/project/proton-caller/versions)
 
-Please create an issue if you want added features or have an issue.
+[Usage](https://github.com/caverym/Proton-Caller#usage)
 
 [FAQ](https://github.com/caverym/Proton-Caller/wiki/FAQ)
 
