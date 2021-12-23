@@ -12,7 +12,7 @@ use std::path::{Path, PathBuf};
 #[derive(Debug)]
 pub struct Index {
     dir: PathBuf,
-    map: BTreeMap<Version, PathBuf>,
+    inner: BTreeMap<Version, PathBuf>,
 }
 
 impl Display for Index {
@@ -23,8 +23,8 @@ impl Display for Index {
             self.len()
         );
 
-        for (version, path) in &self.map {
-            str = format!("{}\nProton {} `{}`", str, version, path.to_string_lossy());
+        for (version, path) in &self.inner {
+            str = format!("{}\nProton {} `{}`", str, version, path.display());
         }
 
         write!(f, "{}", str)
@@ -40,7 +40,7 @@ impl Index {
     pub fn new(index: &Path) -> Result<Index, Error> {
         let mut idx = Index {
             dir: index.to_path_buf(),
-            map: BTreeMap::new(),
+            inner: BTreeMap::new(),
         };
 
         idx.index()?;
@@ -51,19 +51,19 @@ impl Index {
     #[must_use]
     /// Returns the number of Indexed Protons
     pub fn len(&self) -> usize {
-        self.map.len()
+        self.inner.len()
     }
 
     #[must_use]
     /// Returns true if Index is empty
     pub fn is_empty(&self) -> bool {
-        self.map.is_empty()
+        self.inner.is_empty()
     }
 
     #[must_use]
     /// Retrieves the path of the requested Proton version
     pub fn get(&self, version: Version) -> Option<PathBuf> {
-        let path = self.map.get(&version)?;
+        let path = self.inner.get(&version)?;
         Some(path.clone())
     }
 
@@ -85,7 +85,7 @@ impl Index {
                     let name: String = name.to_string_lossy().to_string();
                     if let Some(version_str) = name.split(' ').last() {
                         if let Ok(version) = version_str.parse() {
-                            self.map.insert(version, entry_path);
+                            self.inner.insert(version, entry_path);
                         }
                     }
                 }
