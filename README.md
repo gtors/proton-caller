@@ -1,4 +1,4 @@
-# Proton-Caller
+# <img width="5%" src="logo.svg" alt="Proton Caller logo"> Proton-Caller
 Run any Windows program through [Valve's Proton](https://github.com/ValveSoftware/Proton).
 
 [Usage](https://github.com/caverym/Proton-Caller#usage)
