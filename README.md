@@ -49,16 +49,30 @@ common = "/home/avery/.steam/steam/steamapps/common/"
 
 ## Install:
 
-#### Arch Linux:
+### Arch Linux:
 [Proton-caller](https://aur.archlinux.org/packages/proton-caller) is available as a [package in the AUR](https://aur.archlinux.org/packages/proton-caller).
 
-#### Debian:
+### Debian-based Distributions:
+#### Based on Ubuntu 21.04 or 21.10:
+```
+sudo add-apt-repository ppa:benthetechguy/proton-caller
+sudo apt install proton-caller
+```
+
+#### Other:
 A `.deb` file is available for download at the [releases](https://github.com/caverym/proton-caller/releases) page.
 
-#### Other Linux:
+### RPM-based Distributions:
+A `.rpm` file is available for download at the [releases](https://github.com/caverym/proton-caller/releases) page. There is also a [Copr](https://developer.fedoraproject.org/deployment/copr/about.html) repository available for Fedora 34+ users:
+```
+sudo dnf copr enable benthetechguy/proton-caller
+sudo dnf install proton-caller
+```
+
+### Other Linux:
 An x86_64 Linux binary is available for download at the [releases](https://github.com/caverym/proton-caller/releases) page.
 
-#### Compile from source:
+### Compile from source:
 ```
 git clone https://github.com/caverym/proton-caller.git
 cd proton-caller
@@ -66,7 +80,7 @@ cargo b --release --locked
 sudo install -Dm 755 target/release/proton-call /usr/bin/proton-call 
 ```
 
-### Space Engine example:
+## Space Engine example:
    Make a .desktop launcher. [example file](Space%20Engine.desktop)
    
 ```
