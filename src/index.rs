@@ -3,6 +3,7 @@ use crate::{pass, throw, Version};
 use lliw::Fg::LightYellow as Yellow;
 use lliw::Reset;
 use std::collections::BTreeMap;
+use std::collections::HashMap;
 use std::ffi::OsString;
 use std::fmt::{Display, Formatter};
 use std::fs::DirEntry;
@@ -12,7 +13,7 @@ use std::path::{Path, PathBuf};
 #[derive(Debug)]
 pub struct Index {
     dir: PathBuf,
-    inner: BTreeMap<Version, PathBuf>,
+    inner: HashMap<Version, PathBuf>,
 }
 
 impl Display for Index {
@@ -40,7 +41,7 @@ impl Index {
     pub fn new(index: &Path) -> Result<Index, Error> {
         let mut idx = Index {
             dir: index.to_path_buf(),
-            inner: BTreeMap::new(),
+            inner: HashMap::new(),
         };
 
         idx.index()?;
@@ -62,9 +63,8 @@ impl Index {
 
     #[must_use]
     /// Retrieves the path of the requested Proton version
-    pub fn get(&self, version: Version) -> Option<PathBuf> {
-        let path = self.inner.get(&version)?;
-        Some(path.clone())
+    pub fn get(&self, version: &Version) -> Option<&PathBuf> {
+        self.inner.get(version)
     }
 
     /// Indexes Proton versions

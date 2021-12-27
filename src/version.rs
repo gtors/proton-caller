@@ -1,5 +1,6 @@
 use crate::{pass, throw, Error, Kind};
 use std::fmt::{Display, Formatter};
+use std::hash::Hash;
 use std::path::Path;
 use std::str::FromStr;
 
@@ -65,5 +66,11 @@ impl FromStr for Version {
             [maj, min] => pass!(Version::new(maj.parse()?, min.parse()?)),
             _ => throw!(Kind::VersionParse, "'{}'", s),
         }
+    }
+}
+
+impl Hash for Version {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        core::mem::discriminant(self).hash(state);
     }
 }
