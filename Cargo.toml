@@ -19,3 +19,4 @@ toml = "0.5"
 jargon-args = "0.2.3"
 lliw = "0.2.0"
 serde = { version = "1", features = ["derive"] }
+bincode = "1.3.3"

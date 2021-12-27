@@ -1,11 +1,12 @@
 use crate::{pass, throw, Error, Kind};
+use serde::{Deserialize, Serialize};
 use std::fmt::{Display, Formatter};
 use std::hash::Hash;
 use std::path::Path;
 use std::str::FromStr;
 
 /// Version type to handle Proton Versions
-#[derive(Debug, Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
+#[derive(Debug, Copy, Clone, Ord, PartialOrd, Eq, PartialEq, Serialize, Deserialize, Hash)]
 pub enum Version {
     /// Two number version
     Mainline(u8, u8),
@@ -66,11 +67,5 @@ impl FromStr for Version {
             [maj, min] => pass!(Version::new(maj.parse()?, min.parse()?)),
             _ => throw!(Kind::VersionParse, "'{}'", s),
         }
-    }
-}
-
-impl Hash for Version {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        core::mem::discriminant(self).hash(state);
     }
 }
