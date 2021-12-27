@@ -32,6 +32,9 @@ proton-call -c '/path/to/Proton version' -r foo.exe
 ```
  */
 
+extern crate jargon_args;
+extern crate lliw;
+
 use proton_call::error::{Error, Kind};
 use proton_call::{pass, throw, Config, Index, Proton, Version};
 use std::path::PathBuf;
@@ -105,8 +108,8 @@ fn proton_caller(args: Vec<String>) -> Result<(), Error> {
 fn normal_mode(config: &Config, args: Args) -> Result<Proton, Error> {
     let common_index: Index = Index::new(&config.common())?;
 
-    let proton_path: PathBuf = match common_index.get(args.version) {
-        Some(pp) => pp,
+    let proton_path: PathBuf = match common_index.get(&args.version) {
+        Some(pp) => pp.to_path_buf(),
         None => throw!(
             Kind::ProtonMissing,
             "Proton {} does not exist",
