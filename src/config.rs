@@ -1,3 +1,6 @@
+extern crate serde;
+extern crate toml;
+
 use crate::{
     error::{Error, Kind},
     throw,

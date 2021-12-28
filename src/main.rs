@@ -32,6 +32,9 @@ proton-call -c '/path/to/Proton version' -r foo.exe
 ```
  */
 
+extern crate jargon_args;
+extern crate lliw;
+
 use proton_call::error::{Error, Kind};
 use proton_call::{pass, throw, Config, Index, Proton, Version};
 use std::path::PathBuf;
@@ -61,6 +64,8 @@ fn main() {
 /// Effective main function which parses arguments
 fn proton_caller(args: Vec<String>) -> Result<(), Error> {
     use jargon_args::Jargon;
+
+    // args.insert(args.len(), "--index".to_string());
 
     let mut parser: Jargon = Jargon::from_vec(args);
 
@@ -101,18 +106,20 @@ fn proton_caller(args: Vec<String>) -> Result<(), Error> {
     Ok(())
 }
 
+fn get_proton_path(index: &mut Index, version: Version) -> Result<PathBuf, Error> {
+    if let Some(path) = index.get(&version) {
+        return Ok(path);
+    }
+    eprintln!("{}info:{} Proton {} not found, reindexing...", lliw::Fg::Blue, lliw::Reset, version);
+    index.index()?;
+    index.get(&version).ok_or_else(|| Error::new(Kind::ProtonMissing, format!("Proton {} does not exist", version)))
+}
+
 /// Runs caller in normal mode, running indexed Proton versions
 fn normal_mode(config: &Config, args: Args) -> Result<Proton, Error> {
-    let common_index: Index = Index::new(&config.common())?;
+    let mut index: Index = Index::new(&config.common())?;
 
-    let proton_path: PathBuf = match common_index.get(args.version) {
-        Some(pp) => pp,
-        None => throw!(
-            Kind::ProtonMissing,
-            "Proton {} does not exist",
-            args.version
-        ),
-    };
+    let proton_path: PathBuf = get_proton_path(&mut index, args.version)?;
 
     let proton: Proton = Proton::new(
         args.version,
