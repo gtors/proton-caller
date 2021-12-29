@@ -103,7 +103,7 @@ impl Index {
                 eprintln!("{}warning:{} {}\n", Yellow, Reset, e);
             }
         }
-        
+
         Ok(())
     }
 
@@ -142,6 +142,8 @@ impl Index {
 
         Ok(())
     }
+
+    // TODO: Refactor and optimize `index` method.
 
     /// Indexes Proton versions
     /// # Errors
