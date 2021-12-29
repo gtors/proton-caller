@@ -31,9 +31,10 @@ impl Version {
         Version::Mainline(major, minor)
     }
 
+    #[must_use]
     /// Converts path to custon proton version into Version enum
     pub fn from_custom(name: &Path) -> Version {
-        let name_osstr: &OsStr = name.file_name().unwrap_or(&OsStr::new("custom"));
+        let name_osstr: &OsStr = name.file_name().unwrap_or_else(|| OsStr::new("custom"));
         let name_str: Cow<str> = name_osstr.to_string_lossy();
         let version_str: &str = name_str.split(' ').last().unwrap_or("custom");
         version_str.parse().unwrap_or(Version::Custom)
