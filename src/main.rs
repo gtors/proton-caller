@@ -77,6 +77,8 @@ fn proton_caller(args: Vec<String>) -> Result<(), Error> {
         let config: Config = Config::open()?;
         let common_index = Index::new(&config.common())?;
         println!("{}", common_index);
+    } else if parser.contains(["-a", "--add"]) {
+        todo!("command")
     } else {
         let config: Config = Config::open()?;
         let args = Args {
@@ -110,9 +112,20 @@ fn get_proton_path(index: &mut Index, version: Version) -> Result<PathBuf, Error
     if let Some(path) = index.get(&version) {
         return Ok(path);
     }
-    eprintln!("{}info:{} Proton {} not found, reindexing...", lliw::Fg::Blue, lliw::Reset, version);
+
+    eprintln!(
+        "{}info:{} Proton {} not found, reindexing...",
+        lliw::Fg::Blue,
+        lliw::Reset,
+        version
+    );
     index.index()?;
-    index.get(&version).ok_or_else(|| Error::new(Kind::ProtonMissing, format!("Proton {} does not exist", version)))
+    index.get(&version).ok_or_else(|| {
+        Error::new(
+            Kind::ProtonMissing,
+            format!("Proton {} does not exist", version),
+        )
+    })
 }
 
 /// Runs caller in normal mode, running indexed Proton versions

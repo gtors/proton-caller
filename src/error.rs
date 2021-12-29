@@ -117,6 +117,8 @@ pub enum Kind {
     ArgumentMissing,
     /// for when Jargon has an internal Error,
     JargonInternal,
+    /// for when Index failes an action with cache
+    IndexCache,
 }
 
 impl Display for Kind {
@@ -140,6 +142,7 @@ impl Display for Kind {
                 Kind::ProtonExit => "proton exited with",
                 Kind::ArgumentMissing => "missing command line argument",
                 Kind::JargonInternal => "jargon args internal error",
+                Kind::IndexCache => "failed read/write to cache",
             }
         )
     }

@@ -64,17 +64,18 @@ impl Config {
     pub fn config_location() -> Result<PathBuf, Error> {
         use std::env::var;
 
-        if let Ok(val) = var("XDG_CONFIG_HOME") {
-            let path = format!("{}/proton.conf", val);
-            Ok(PathBuf::from(path))
-        } else if let Ok(val) = var("HOME") {
-            let path = format!("{}/.config/proton.conf", val);
-            Ok(PathBuf::from(path))
-        } else {
-            throw!(Kind::Environment, "XDG_CONFIG_HOME / HOME missing")
+        if let Ok(val) = var("XDG_CONFIG_HOEM") {
+            let path: String = format!("{}/proton.conf", val);
+            return Ok(PathBuf::from(path));
+        }
+
+        match var("HOME") {
+            Ok(var) => Ok(PathBuf::from(format!("{}/.config/proton.conf", var))),
+            Err(_) => throw!(Kind::Environment, "XDG_CONFIG_HOME / HOME missing"),
         }
     }
 
+    #[inline]
     /// Sets a default common if not given by user
     fn default_common(&mut self) {
         if self.common.is_none() {
@@ -93,6 +94,7 @@ impl Config {
     }
 
     #[must_use]
+    #[inline]
     /// Returns the in use common directory
     pub fn common(&self) -> PathBuf {
         if let Some(common) = &self.common {
@@ -103,12 +105,14 @@ impl Config {
     }
 
     #[must_use]
+    #[inline]
     /// Returns the in use steam directory
     pub fn steam(&self) -> PathBuf {
         self.steam.clone()
     }
 
     #[must_use]
+    #[inline]
     /// Returns the in use compat data directory
     pub fn data(&self) -> PathBuf {
         self.data.clone()

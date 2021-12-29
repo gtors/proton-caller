@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::ffi::OsString;
 use std::fmt::{Display, Formatter};
-use std::fs::{DirEntry, OpenOptions};
+use std::fs::{DirEntry, File, OpenOptions};
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 
@@ -75,56 +75,72 @@ impl Index {
 
         if let Ok(val) = var("HOME") {
             let path = format!("{}/.cache/proton/index", val);
-            Ok(PathBuf::from(path))
-        } else {
-            throw!(Kind::Environment, "XDG_CONFIG_HOME / HOME missing")
+            return Ok(PathBuf::from(path));
+        }
+
+        throw!(Kind::Environment, "$HOME does not exist")
+    }
+
+    fn open_cache() -> Result<File, Error> {
+        let path: PathBuf = Self::cache_location()?;
+        match OpenOptions::new()
+            .read(true)
+            .write(true)
+            .create(true)
+            .open(path)
+        {
+            Ok(cache) => pass!(cache),
+            Err(e) => throw!(Kind::IndexCache, "{}", e),
         }
     }
 
     fn load(&mut self) -> Result<(), Error> {
-        if let Ok(path) = Self::cache_location() {
-            if let Ok(mut file) = OpenOptions::new()
-                .create(true)
-                .write(true)
-                .read(true)
-                .open(path)
-            {
-                let mut buf: Vec<u8> = Vec::new();
-                if file.read_to_end(&mut buf).is_ok() {
-                    if let Ok(index) = bincode::deserialize::<Self>(&buf) {
-                        self.dir = index.dir;
-                        self.inner = index.inner;
-                        return Ok(());
-                    }
-                }
+        if let Err(e) = self._load() {
+            eprintln!("{}warning{}: {}\nreindexing...", Yellow, Reset, e);
+            self.index()?;
+
+            if let Err(e) = self.save() {
+                eprintln!("{}warning:{} {}\n", Yellow, Reset, e);
             }
         }
+        
+        Ok(())
+    }
 
-        eprintln!("{}warning:{} failed to load index… reindexing...", Yellow, Reset);
+    fn _load(&mut self) -> Result<(), Error> {
+        let cache: File = Self::open_cache()?;
+        self.read_index(cache)?;
+        Ok(())
+    }
 
-        self.index()?;
-        self.save();
+    fn read_index(&mut self, mut f: File) -> Result<(), Error> {
+        let mut buf: Vec<u8> = Vec::new();
+
+        if let Err(e) = f.read_to_end(&mut buf) {
+            throw!(Kind::IndexCache, "{}", e);
+        }
+
+        self.inner = match bincode::deserialize::<Self>(&buf) {
+            Ok(c) => c.inner,
+            Err(_) => throw!(Kind::IndexCache, "can't deserialize"),
+        };
 
         Ok(())
     }
 
-    fn save(&self) {
-        if let Ok(path) = Self::cache_location() {
-            if let Ok(mut file) = OpenOptions::new()
-                .create(true)
-                .write(true)
-                .read(true)
-                .open(path)
-            {
-                if let Ok(index) = bincode::serialize(self) {
-                    if file.write(&index).is_err() {
-                        eprintln!("{}warning:{} failed writing to cached index", Yellow, Reset);
-                    }
-                }
-            }
+    fn save(&self) -> Result<(), Error> {
+        let mut cache: File = Self::open_cache()?;
+
+        let bytes: Vec<u8> = match bincode::serialize(self) {
+            Ok(b) => b,
+            Err(e) => throw!(Kind::IndexCache, "{}", e),
+        };
+
+        if let Err(e) = cache.write(&bytes) {
+            throw!(Kind::IndexCache, "{}", e);
         }
 
-        eprintln!("{}warning:{} failed opening cached index", Yellow, Reset);
+        Ok(())
     }
 
     /// Indexes Proton versions

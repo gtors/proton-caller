@@ -1,8 +1,10 @@
 use crate::{pass, throw, Error, Kind};
 use serde::{Deserialize, Serialize};
+use std::borrow::Cow;
+use std::ffi::OsStr;
 use std::fmt::{Display, Formatter};
 use std::hash::Hash;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::str::FromStr;
 
 /// Version type to handle Proton Versions
@@ -29,19 +31,12 @@ impl Version {
         Version::Mainline(major, minor)
     }
 
-    #[must_use]
-    /// Tries parsing custom Proton path into `Version::Mainline`
+    /// Converts path to custon proton version into Version enum
     pub fn from_custom(name: &Path) -> Version {
-        if let Some(n) = name.file_name() {
-            let name_str = n.to_string_lossy().to_string();
-            if let Some(version_str) = name_str.split(' ').last() {
-                if let Ok(version) = version_str.parse() {
-                    return version;
-                }
-            }
-        }
-
-        Version::Custom
+        let name_osstr: &OsStr = name.file_name().unwrap_or(&OsStr::new("custom"));
+        let name_str: Cow<str> = name_osstr.to_string_lossy();
+        let version_str: &str = name_str.split(' ').last().unwrap_or("custom");
+        version_str.parse().unwrap_or(Version::Custom)
     }
 }
 
