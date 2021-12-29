@@ -37,7 +37,7 @@ proton-call -c '/path/to/Proton version' -r foo.exe
 ```
 
 ## Config:
-Configuration files are extremely simple: `~/.config/proton.conf`  
+Configuration files are extremely simple: `~/.config/proton.conf`
 Set your own path to `data` (any empty directory), `steam`, (the directory steam is installed in), and optionally `common` (steam's common directory).
 ```
 data = "/home/avery/Documents/Proton/env/"
@@ -50,10 +50,13 @@ common = "/home/avery/.steam/steam/steamapps/common/"
 ## Install:
 
 ### Arch Linux:
-[Proton-caller](https://aur.archlinux.org/packages/proton-caller) is available as a [package in the AUR](https://aur.archlinux.org/packages/proton-caller).
+[proton-caller](https://aur.archlinux.org/packages/proton-caller) is available as a [package in the AUR](https://aur.archlinux.org/packages/proton-caller).
 
 ### Debian-based Distributions:
-#### Based on Ubuntu 21.04 or 21.10:
+#### Based on Debian 12+ or Ubuntu 22.04+:
+`sudo apt install proton-caller`
+
+#### Based on Ubuntu 20.04-21.10:
 ```
 sudo add-apt-repository ppa:benthetechguy/proton-caller
 sudo apt install proton-caller
@@ -82,7 +85,7 @@ sudo install -Dm 755 target/release/proton-call /usr/bin/proton-call
 
 ## Space Engine example:
    Make a .desktop launcher. [example file](Space%20Engine.desktop)
-   
+
 ```
 [Desktop Entry]
 Type=Application
