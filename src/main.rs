@@ -36,7 +36,7 @@ extern crate jargon_args;
 extern crate lliw;
 
 use proton_call::error::{Error, Kind};
-use proton_call::{pass, throw, Config, Index, Proton, Version};
+use proton_call::{pass, throw, Config, Index, Proton, Version, RuntimeOption};
 use std::path::PathBuf;
 use std::process::exit;
 
@@ -45,8 +45,8 @@ use std::process::exit;
 struct Args {
     program: PathBuf,
     version: Version,
-    log: bool,
     custom: Option<PathBuf>,
+    options: Vec<RuntimeOption>,
     args: Vec<String>,
 }
 
@@ -81,13 +81,45 @@ fn proton_caller(args: Vec<String>) -> Result<(), Error> {
         todo!("command")
     } else {
         let config: Config = Config::open()?;
-        let args = Args {
+        let mut args = Args {
             program: parser.result_arg(["-r", "--run"])?,
             version: parser.option_arg(["-p", "--proton"]).unwrap_or_default(),
-            log: parser.contains(["-l", "--log"]),
             custom: parser.option_arg(["-c", "--custom"]),
-            args: parser.finish(),
+            options: Vec::new(),
+            args: Vec::new(),
         };
+
+        let (options, argv) = if parser.contains(["-o", "--options"]) {
+            let mut opts: Vec<RuntimeOption> = Vec::new();
+
+            if parser.contains(["-l", "--log"]) {
+                opts.insert(opts.len(), RuntimeOption::log)
+            }
+
+            let finish = parser.finish();
+            let mut arv = Vec::new();
+
+            for arg in finish {
+                if let Ok(opt) = arg.parse::<RuntimeOption>() {
+                    opts.insert(opts.len(), opt)
+                } else {
+                    arv.insert(arv.len(), arg)
+                }
+            }
+
+            (opts, arv)
+        } else {
+            let mut opts: Vec<RuntimeOption> = Vec::new();
+
+            if parser.contains(["-l", "--log"]) {
+                opts.insert(opts.len(), RuntimeOption::log)
+            }
+
+            (opts, parser.finish())
+        };
+
+        args.options = options;
+        args.args = argv;
 
         let proton = if args.custom.is_some() {
             custom_mode(&config, args)?
@@ -139,7 +171,7 @@ fn normal_mode(config: &Config, args: Args) -> Result<Proton, Error> {
         proton_path,
         args.program,
         args.args,
-        args.log,
+        args.options,
         config.data(),
         config.steam(),
     );
@@ -155,7 +187,7 @@ fn custom_mode(config: &Config, args: Args) -> Result<Proton, Error> {
             custom,
             args.program,
             args.args,
-            args.log,
+            args.options,
             config.data(),
             config.steam(),
         );

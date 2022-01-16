@@ -119,6 +119,8 @@ pub enum Kind {
     JargonInternal,
     /// for when Index failes an action with cache
     IndexCache,
+    /// for when parsing RuntimeOption fails,
+    ParseRuntimeOpt,
 }
 
 impl Display for Kind {
@@ -143,6 +145,7 @@ impl Display for Kind {
                 Kind::ArgumentMissing => "missing command line argument",
                 Kind::JargonInternal => "jargon args internal error",
                 Kind::IndexCache => "failed read/write to cache",
+                Kind::ParseRuntimeOpt => "failed parsing runtime option",
             }
         )
     }

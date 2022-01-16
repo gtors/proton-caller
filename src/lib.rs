@@ -13,6 +13,7 @@ This defines the internal API used in `proton-call` to run Proton
 mod config;
 mod index;
 mod version;
+mod runtime_options;
 
 /// Contains the `Error` and `ErrorKind` types
 pub mod error;
@@ -23,6 +24,7 @@ pub use index::Index;
 use std::borrow::Cow;
 use std::fs::create_dir;
 pub use version::Version;
+pub use runtime_options::RuntimeOption;
 
 use std::path::PathBuf;
 use std::process::ExitStatus;
@@ -34,7 +36,7 @@ pub struct Proton {
     path: PathBuf,
     program: PathBuf,
     args: Vec<String>,
-    log: bool,
+    options: Vec<RuntimeOption>,
     compat: PathBuf,
     steam: PathBuf,
 }
@@ -47,7 +49,7 @@ impl Proton {
         path: PathBuf,
         program: PathBuf,
         args: Vec<String>,
-        log: bool,
+        options: Vec<RuntimeOption>,
         compat: PathBuf,
         steam: PathBuf,
     ) -> Proton {
@@ -56,7 +58,7 @@ impl Proton {
             path,
             program,
             args,
-            log,
+            options,
             compat,
             steam,
         }
@@ -102,6 +104,14 @@ impl Proton {
         pass!()
     }
 
+    fn gen_options(&self) -> Vec<(String, String)> {
+        let mut opts = Vec::new();
+        for opt in &self.options {
+            opts.insert(opts.len(), (opt.to_string(), "1".to_string()))
+        }
+        opts
+    }
+
     /// Changes `compat` path to the version of Proton in use, creates the directory if doesn't already exist
     ///
     /// # Errors
@@ -120,21 +130,22 @@ impl Proton {
     fn execute(self) -> Result<ExitStatus, Error> {
         use std::process::{Child, Command};
 
-        println!(
-            "Running Proton {} for {}",
-            self.version,
-            self.program.to_string_lossy()
-        );
+        let envs: Vec<(String, String)> = self.gen_options();
 
-        let log: &str = if self.log { "1" } else { "0" };
+        println!(
+            "Running Proton {} for {} with:\n{:?}",
+            self.version,
+            self.program.to_string_lossy(),
+            envs,
+        );
 
         let mut child: Child = match Command::new(&self.path)
             .arg("run")
             .arg(&self.program)
             .args(&self.args)
-            .env("PROTON_LOG", log)
             .env("STEAM_COMPAT_DATA_PATH", &self.compat)
             .env("STEAM_COMPAT_CLIENT_INSTALL_PATH", &self.steam)
+            .envs(envs)
             .spawn()
         {
             Ok(c) => c,
