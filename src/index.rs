@@ -83,6 +83,15 @@ impl Index {
 
     fn open_cache() -> Result<File, Error> {
         let path: PathBuf = Self::cache_location()?;
+
+        if let Some(parent) = path.parent() {
+            if !parent.exists() {
+                if let Err(e) = std::fs::create_dir(parent) {
+                    throw!(Kind::IndexCache, "{}", e);
+                }
+            }
+        }
+
         match OpenOptions::new()
             .read(true)
             .write(true)
