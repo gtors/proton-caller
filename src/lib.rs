@@ -12,8 +12,9 @@ This defines the internal API used in `proton-call` to run Proton
 
 mod config;
 mod index;
-mod version;
+mod runtime;
 mod runtime_options;
+mod version;
 
 /// Contains the `Error` and `ErrorKind` types
 pub mod error;
@@ -21,10 +22,12 @@ pub mod error;
 pub use config::Config;
 use error::{Error, Kind};
 pub use index::Index;
+pub use runtime::RunTimeVersion;
+use runtime::Runtime;
+pub use runtime_options::RuntimeOption;
 use std::borrow::Cow;
 use std::fs::create_dir;
 pub use version::Version;
-pub use runtime_options::RuntimeOption;
 
 use std::path::PathBuf;
 use std::process::ExitStatus;
@@ -39,6 +42,8 @@ pub struct Proton {
     options: Vec<RuntimeOption>,
     compat: PathBuf,
     steam: PathBuf,
+    runtime: Option<RunTimeVersion>,
+    common: PathBuf,
 }
 
 impl Proton {
@@ -52,6 +57,8 @@ impl Proton {
         options: Vec<RuntimeOption>,
         compat: PathBuf,
         steam: PathBuf,
+        runtime: Option<RunTimeVersion>,
+        common: PathBuf,
     ) -> Proton {
         Proton {
             version,
@@ -61,6 +68,8 @@ impl Proton {
             options,
             compat,
             steam,
+            runtime,
+            common,
         }
         .update_path()
     }
@@ -123,6 +132,10 @@ impl Proton {
         self.create_p_dir()?;
         self.check_proton()?;
         self.check_program()?;
+        if let Some(runtime) = self.runtime {
+            let runtime = Runtime::from_proton(runtime, self)?;
+            return runtime.execute();
+        }
         self.execute()
     }
 
@@ -133,7 +146,7 @@ impl Proton {
         let envs: Vec<(String, String)> = self.gen_options();
 
         println!(
-            "Running Proton {} for {} with:\n{:?}",
+            "Running Proton {} for {} with:\n{:#?}",
             self.version,
             self.program.to_string_lossy(),
             envs,

@@ -121,6 +121,8 @@ pub enum Kind {
     IndexCache,
     /// for when parsing RuntimeOption fails,
     ParseRuntimeOpt,
+    /// for when steam runtime version is missing
+    RuntimeMissing,
 }
 
 impl Display for Kind {
@@ -146,6 +148,7 @@ impl Display for Kind {
                 Kind::JargonInternal => "jargon args internal error",
                 Kind::IndexCache => "failed read/write to cache",
                 Kind::ParseRuntimeOpt => "failed parsing runtime option",
+                Kind::RuntimeMissing => "failed to find Runtime",
             }
         )
     }

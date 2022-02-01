@@ -4,7 +4,7 @@ use std::borrow::Cow;
 use std::ffi::OsStr;
 use std::fmt::{Display, Formatter};
 use std::hash::Hash;
-use std::path::{Path};
+use std::path::Path;
 use std::str::FromStr;
 
 /// Version type to handle Proton Versions

@@ -36,7 +36,7 @@ extern crate jargon_args;
 extern crate lliw;
 
 use proton_call::error::{Error, Kind};
-use proton_call::{pass, throw, Config, Index, Proton, Version, RuntimeOption};
+use proton_call::{pass, throw, Config, Index, Proton, RunTimeVersion, RuntimeOption, Version};
 use std::path::PathBuf;
 use std::process::exit;
 
@@ -48,6 +48,7 @@ struct Args {
     custom: Option<PathBuf>,
     options: Vec<RuntimeOption>,
     args: Vec<String>,
+    runtime_version: Option<RunTimeVersion>,
 }
 
 /// Main function which purely handles errors
@@ -85,6 +86,7 @@ fn proton_caller(args: Vec<String>) -> Result<(), Error> {
             program: parser.result_arg(["-r", "--run"])?,
             version: parser.option_arg(["-p", "--proton"]).unwrap_or_default(),
             custom: parser.option_arg(["-c", "--custom"]),
+            runtime_version: parser.option_arg::<RunTimeVersion, [&str; 2]>(["-R", "--runtime"]),
             options: Vec::new(),
             args: Vec::new(),
         };
@@ -174,6 +176,8 @@ fn normal_mode(config: &Config, args: Args) -> Result<Proton, Error> {
         args.options,
         config.data(),
         config.steam(),
+        args.runtime_version,
+        config.common(),
     );
 
     pass!(proton)
@@ -190,6 +194,8 @@ fn custom_mode(config: &Config, args: Args) -> Result<Proton, Error> {
             args.options,
             config.data(),
             config.steam(),
+            args.runtime_version,
+            config.common(),
         );
 
         return pass!(proton);

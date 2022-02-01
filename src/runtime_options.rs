@@ -1,4 +1,7 @@
-use std::{str::FromStr, fmt::{Debug, Display}};
+use std::{
+    fmt::{Debug, Display},
+    str::FromStr,
+};
 
 use crate::{error::Kind, throw};
 
