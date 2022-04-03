@@ -32,15 +32,6 @@ impl Runtime {
 
         let envs: Vec<(String, String)> = self.proton.gen_options();
 
-        println!(
-            "Running {} with Proton {} for {} with:\n{:#?}\n{:#?}",
-            self.version,
-            self.proton.version,
-            self.proton.program.to_string_lossy(),
-            envs,
-            self,
-        );
-
         let mut child: Child = match Command::new(&self.path)
         .arg(&self.proton.path)
         .arg("runinprefix")
