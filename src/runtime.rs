@@ -33,25 +33,27 @@ impl Runtime {
         let envs: Vec<(String, String)> = self.proton.gen_options();
 
         println!(
-            "Running {} with Proton {} for {} with:\n{:#?}",
+            "Running {} with Proton {} for {} with:\n{:#?}\n{:#?}",
             self.version,
             self.proton.version,
             self.proton.program.to_string_lossy(),
             envs,
+            self,
         );
 
         let mut child: Child = match Command::new(&self.path)
-            .arg(&self.proton.path)
-            .arg("run")
-            .args(&self.proton.args)
-            .env("STEAM_COMPAT_DATA_PATH", &self.proton.compat)
-            .env("STEAM_COMPAT_CLIENT_INSTALL_PATH", &self.proton.steam)
-            .envs(envs)
-            .spawn()
-        {
-            Ok(c) => c,
-            Err(e) => throw!(Kind::ProtonSpawn, "{}\nDebug:\n{:#?}", e, self),
+        .arg(&self.proton.path)
+        .arg("runinprefix")
+        .arg(&self.proton.program)
+        .args(&self.proton.args)
+        .env("STEAM_COMPAT_DATA_PATH", &self.proton.compat)
+        .env("STEAM_COMPAT_CLIENT_INSTALL_PATH", &self.proton.steam)
+        .envs(envs)
+        .spawn() {
+            Ok(child) => child,
+            Err(e) => throw!(Kind::ProtonExit, "{}", e),
         };
+
 
         let status: ExitStatus = match child.wait() {
             Ok(e) => e,

@@ -20,7 +20,7 @@ pub enum Version {
 
 impl Default for Version {
     fn default() -> Self {
-        Version::Mainline(6, 3)
+        Version::Mainline(7, 0)
     }
 }
 
