@@ -34,7 +34,7 @@ dependencies = [
 
 [[package]]
 name = "proton-call"
-version = "3.0.1"
+version = "3.1.0"
 dependencies = [
  "bincode",
  "jargon-args",
