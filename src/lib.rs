@@ -132,10 +132,28 @@ impl Proton {
         self.create_p_dir()?;
         self.check_proton()?;
         self.check_program()?;
+
+        // check one for runtimes
         if let Some(runtime) = self.runtime {
             let runtime = Runtime::from_proton(runtime, self)?;
             return runtime.execute();
         }
+
+        // check two for runtimes
+        match self.version {
+            Version::Mainline(maj, _) => {
+                if maj >= 5 {
+                    let runtime = Runtime::from_proton(RunTimeVersion::Soldier, self)?;
+                    return runtime.execute()
+                }
+            },
+            Version::Experimental => {
+                let runtime = Runtime::from_proton(RunTimeVersion::Soldier, self)?;
+                return runtime.execute()
+            }
+            _ => {},
+        }
+
         self.execute()
     }
 
