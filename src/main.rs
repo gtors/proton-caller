@@ -213,8 +213,10 @@ Options:
     -h, --help              View this help message
     -i, --index             View an index of installed Proton versions
     -l, --log               Pass PROTON_LOG variable to Proton
+    -o, --options [OPTIONS] Pass options to Runtime
     -p, --proton [VERSION]  Use Proton VERSION from `common`
     -r, --run EXE           Run EXE in proton
+    -R, --runtime [VERSION] Use runtime VERSION
     -v, --version           View version information
 
 Config:

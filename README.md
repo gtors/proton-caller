@@ -47,6 +47,28 @@ steam = "/home/avery/.steam/steam/"
 common = "/home/avery/.steam/steam/steamapps/common/"
 ```
 
+## Runtime:
+
+Proton Caller 3.1.0 added support for Steam's runtimes and their options. Selecting a runtime can be done by using `-R Soldier/Sniper/Default/BattleEye`
+
+On Proton versions 5 and newer, runtime Soldier is selected automatically
+
+The runtime options can be selected using *multiple* `-o`
+
+available options:
+```
+    log, // PROTON_LOG
+    wined3d, // PROTON_USE_WINED3D
+    nod3d11, // PROTON_NO_D3D11
+    nod3d10, // PROTON_NO_D3D10
+    noesync, // PROTON_NO_ESYNC
+    nofsync, // PROTON_NO_FSYNC
+    enablenvapi, // PROTON_ENABLE_NVAPI
+}
+```
+
+More about these options can be found in Proton's manual.
+
 ## Install:
 
 ### Arch Linux:
