@@ -64,7 +64,7 @@ impl Config {
     pub fn config_location() -> Result<PathBuf, Error> {
         use std::env::var;
 
-        if let Ok(val) = var("XDG_CONFIG_HOEM") {
+        if let Ok(val) = var("XDG_CONFIG_HOME") {
             let path: String = format!("{}/proton.conf", val);
             return Ok(PathBuf::from(path));
         }
