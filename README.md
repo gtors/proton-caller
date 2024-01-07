@@ -31,7 +31,7 @@ Uses specified version of Proton, any extra arguments will be passed to the exec
 proton-call -p 5.13 -r foo.exe
 ```
 
-Uses custom version of Proton, give the past to directory, not the Proton executable itself.
+Uses custom version of Proton, give the path to directory, not the Proton executable itself.
 ```
 proton-call -c '/path/to/Proton version' -r foo.exe
 ```

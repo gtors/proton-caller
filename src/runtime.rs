@@ -77,6 +77,8 @@ pub enum RunTimeVersion {
     Soldier,
     /// BattleEye version of Steam's runtime
     BattleEye,
+    /// EasyAntiCheat version of Steam's runtime
+    EasyAntiCheat,
 }
 
 impl Display for RunTimeVersion {
@@ -86,6 +88,7 @@ impl Display for RunTimeVersion {
             RunTimeVersion::Sniper => write!(f, "SteamLinuxRuntime_sniper"),
             RunTimeVersion::Soldier => write!(f, "SteamLinuxRuntime_soldier"),
             RunTimeVersion::BattleEye => write!(f, "Proton BattlEye Runtime"),
+            RunTimeVersion::EasyAntiCheat => write!(f, "Proton EasyAntiCheat Runtime"),
         }
     }
 }
@@ -99,6 +102,7 @@ impl FromStr for RunTimeVersion {
             "soldier" => Self::Soldier,
             "sniper" => Self::Sniper,
             "battleeye" => Self::BattleEye,
+            "eac" | "easyanticheat" => Self::EasyAntiCheat,
             _ => Self::Default,
         })
     }
